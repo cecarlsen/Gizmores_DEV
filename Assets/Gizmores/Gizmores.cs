@@ -134,14 +134,14 @@ public static class Gizmores
 
 			case Axis.Z:
 				circlePos = rotation * circlePoints[0] * radius;
-				prevPos.Set( center.x+circlePos.y, center.y+circlePos.x, center.z+circlePos.z );
+				prevPos.Set( center.x+circlePos.x, center.y+circlePos.y, center.z+circlePos.z );
 				for( int i = 1; i < pointCount; i++ ){
 					circlePos = rotation * circlePoints[i] * radius;
-					pos.Set( center.x+circlePos.y, center.y+circlePos.x, center.z+circlePos.z );
+					pos.Set( center.x+circlePos.x, center.y+circlePos.y, center.z+circlePos.z );
 					Gizmos.DrawLine( prevPos, pos );
 					prevPos = pos;
 				}
-				pos.Set( center.x+circlePosEnd.y, center.y+circlePosEnd.x, center.z+circlePosEnd.z );
+				pos.Set( center.x+circlePosEnd.x, center.y+circlePosEnd.y, center.z+circlePosEnd.z );
 				Gizmos.DrawLine( prevPos, pos );
 				break;
 		}

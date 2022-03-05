@@ -8,7 +8,7 @@ using UnityEngine;
 public class GizmoresExample : MonoBehaviour
 {
 	public float arcAngleBegin = 0;
-	public float arcAngleEnd = 180;
+	public float arcAngleEnd = 110;
 
 	public float coneAngle = 90;
 
