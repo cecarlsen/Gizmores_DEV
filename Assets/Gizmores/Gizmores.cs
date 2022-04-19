@@ -305,6 +305,14 @@ public static class Gizmores
 	}
 
 
+	public static void DrawLabel( Vector3 position, string text )
+	{
+		#if UNITY_EDITOR
+		UnityEditor.Handles.Label( position, text );
+		#endif
+	}
+
+
 	static void CreateCirlcePoints()
 	{
 		circlePoints = new Vector2[cirlceResolution];
