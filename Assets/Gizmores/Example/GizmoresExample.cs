@@ -1,5 +1,5 @@
 ﻿/*
-	Copyright © Carl Emil Carlsen 2018-2021
+	Copyright © Carl Emil Carlsen 2018-2022
 	http://cec.dk
 */
 
@@ -7,8 +7,9 @@ using UnityEngine;
 
 public class GizmoresExample : MonoBehaviour
 {
-	public float arcAngleBegin = 0;
-	public float arcAngleEnd = 110;
+	[SerializeField] float _arcAngleBegin = 0;
+	[SerializeField] float _arcAngleEnd = 110;
+	[SerializeField] Camera _camera;
 
 	public float coneAngle = 90;
 
@@ -29,11 +30,11 @@ public class GizmoresExample : MonoBehaviour
 		Next( ref pos );
 
 		pos.x = 0; pos.z += 2;
-		Gizmores.DrawWireArc( pos, 0.5f, arcAngleBegin, arcAngleEnd, Gizmores.Axis.X );
+		Gizmores.DrawWireArc( pos, 0.5f, _arcAngleBegin, _arcAngleEnd, Gizmores.Axis.X );
 		Next( ref pos );
-		Gizmores.DrawWireArc( pos, 0.5f, arcAngleBegin, arcAngleEnd, Gizmores.Axis.Y );
+		Gizmores.DrawWireArc( pos, 0.5f, _arcAngleBegin, _arcAngleEnd, Gizmores.Axis.Y );
 		Next( ref pos );
-		Gizmores.DrawWireArc( pos, 0.5f, arcAngleBegin, arcAngleEnd, Gizmores.Axis.Z );
+		Gizmores.DrawWireArc( pos, 0.5f, _arcAngleBegin, _arcAngleEnd, Gizmores.Axis.Z );
 		Next( ref pos );
 
 		pos.x = 0; pos.z += 2;
@@ -72,6 +73,16 @@ public class GizmoresExample : MonoBehaviour
 		Gizmores.DrawWireSphericalCone( pos, 1, coneAngle, Gizmores.Axis.Y );
 		Next( ref pos );
 		Gizmores.DrawWireSphericalCone( pos, 1, coneAngle, Gizmores.Axis.Z );
+
+		pos.x = 0; pos.z += 2;
+		Gizmores.DrawWireCross( pos, 1 );
+		Next( ref pos );
+
+		pos.x = 0; pos.z += 2;
+		Gizmores.DrawWireAxis( pos, 0.5f );
+		Next( ref pos );
+
+		if( _camera ) Gizmores.DrawFrustum( _camera ); // You can also pass a projection matrix instead.
 	}
 
 

@@ -3,7 +3,7 @@
 
 	The MIT License (MIT)
 
-		Copyright (c) 2018-2021, Carl Emil Carlsen http://cec.dk
+		Copyright (c) 2018-2022, Carl Emil Carlsen http://cec.dk
 
 		Permission is hereby granted, free of charge, to any person obtaining a copy
 		of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,10 @@ public static class Gizmores
 	public enum Axis { X, Y, Z }
 
 
+	/// <summary>
+	/// Draw a rect (zero at center).
+	/// </summary>
+	/// <param name="rect"></param>
 	public static void DrawWireRect( Rect rect )
 	{
 		Vector2 min = rect.min;
@@ -46,6 +50,9 @@ public static class Gizmores
 	}
 
 
+	/// <summary>
+	/// Draw a circle.
+	/// </summary>
 	public static void DrawWireCircle( Vector3 center, float radius, Axis axis = Axis.Z )
 	{
 		if( circlePoints == null ) CreateCirlcePoints();
@@ -89,7 +96,7 @@ public static class Gizmores
 
 
 	/// <summary>
-	/// Expects angles in degrees.
+	/// Draw an arc (angles in degrees).
 	/// </summary>
 	public static void DrawWireArc( Vector3 center, float radius, float angleBegin, float angleEnd, Axis axis = Axis.Z )
 	{
@@ -148,6 +155,9 @@ public static class Gizmores
 	}
 
 
+	/// <summary>
+	/// Draw a dome (half sphere).
+	/// </summary>
 	public static void DrawWireDome( Vector3 center, float radius, Axis axis = Axis.Z, bool mirror = false )
 	{
 		DrawWireCircle( center, radius, axis );
@@ -178,6 +188,9 @@ public static class Gizmores
 	}
 
 
+	/// <summary>
+	/// Draw a cylinder.
+	/// </summary>
 	public static void DrawWireCyllinder( Vector3 center, float cyllinderHeight, float radius )
 	{
 		if( circlePoints == null ) CreateCirlcePoints();
@@ -196,6 +209,9 @@ public static class Gizmores
 	}
 
 
+	/// <summary>
+	/// Draw a capsule.
+	/// </summary>
 	public static void DrawWireCapsule( Vector3 center, float cyllinderHeight, float radius )
 	{
 		if( circlePoints == null ) CreateCirlcePoints();
@@ -222,6 +238,9 @@ public static class Gizmores
 	}
 
 
+	/// <summary>
+	/// Draw a cone.
+	/// </summary>
 	public static void DrawWireCone( Vector3 position, float height, float angle, Axis axis = Axis.Z, bool originAtBottom = true )
 	{
 		float radius = Mathf.Tan( angle * 0.5f * Mathf.Deg2Rad ) * height;
@@ -246,6 +265,9 @@ public static class Gizmores
 	}
 
 
+	/// <summary>
+	/// Draw a spherical cone.
+	/// </summary>
 	public static void DrawWireSphericalCone( Vector3 position, float radius, float angle, Axis axis = Axis.Z )
 	{
 		float circleOffset = Mathf.Cos( angle * 0.5f * Mathf.Deg2Rad ) * radius;
@@ -260,18 +282,16 @@ public static class Gizmores
 		Gizmos.DrawLine( position, top - right );
 		Gizmos.DrawLine( position, top + up );
 		Gizmos.DrawLine( position, top - up );
-		DrawWireArc( position, radius, -angle * 0.5f, angle * 0.5f, (Axis) ( ( (int) axis + 1 ) % 3 ) );
-		DrawWireArc( position, radius, -angle * 0.5f + 90, angle * 0.5f + 90, (Axis) ( ( (int) axis + 2 ) % 3 ) );
+		float angleOffset = axis == Axis.Y ? 90f : 0f;
+		DrawWireArc( position, radius, -angle * 0.5f + angleOffset, angle * 0.5f + angleOffset, (Axis) ( ( (int) axis + 1 ) % 3 ) );
+		angleOffset = axis == Axis.X ? 90f : 0f;
+		DrawWireArc( position, radius, -angle * 0.5f + 90 - angleOffset, angle * 0.5f + 90 - angleOffset, (Axis) ( ( (int) axis + 2 ) % 3 ) );
 	}
 
 
 	/// <summary>
-	/// Draw Wire Spherical Segment.
+	/// Draw a spherical segment.
 	/// </summary>
-	/// <param name="position"></param>
-	/// <param name="radius"></param>
-	/// <param name="angle">In degrees</param>
-	/// <param name="axis"></param>
 	public static void DrawWireSphericalSegment( Vector3 position, float radius, float angle, Axis axis = Axis.Z )
 	{
 		float circleOffset = Mathf.Cos( angle * 0.5f * Mathf.Deg2Rad ) * radius;
@@ -285,12 +305,8 @@ public static class Gizmores
 
 
 	/// <summary>
-	/// Draw Wire Bone.
+	/// Draw a bone.
 	/// </summary>
-	/// <param name="position"></param>
-	/// <param name="radius"></param>
-	/// <param name="length"></param>
-	/// <param name="axis"></param>
 	public static void DrawWireBone( Vector3 position, float radius, float length, Axis axis = Axis.Z, bool mirror = false )
 	{
 		Vector3 forward = AxisDirection( axis );
@@ -305,11 +321,80 @@ public static class Gizmores
 	}
 
 
+	/// <summary>
+	/// Draw a label.
+	/// </summary>
 	public static void DrawLabel( Vector3 position, string text )
 	{
 		#if UNITY_EDITOR
 		UnityEditor.Handles.Label( position, text );
 		#endif
+	}
+
+
+	/// <summary>
+	/// Draw a camera frustum.
+	/// </summary>
+	public static void DrawFrustum( Matrix4x4 viewMatrix,  Matrix4x4 projectionMatrix, bool isGL = false )
+	{
+		if( !isGL ) viewMatrix = Matrix4x4.Scale( new Vector3( 1f, 1f, -1f ) ) * viewMatrix;
+		projectionMatrix *= viewMatrix;
+		projectionMatrix = projectionMatrix.inverse;
+		Vector3 f0 = projectionMatrix.MultiplyPoint( new Vector3( -1f, -1f, -1f ) );
+		Vector3 f1 = projectionMatrix.MultiplyPoint( new Vector3( -1f, 1f, -1f ) );
+		Vector3 f2 = projectionMatrix.MultiplyPoint( new Vector3( 1f, 1f,-1f ) );
+		Vector3 f3 = projectionMatrix.MultiplyPoint( new Vector3( 1f, -1f, -1f ) );
+		Vector3 b0 = projectionMatrix.MultiplyPoint( new Vector3( -1f, -1f, 1f ) );
+		Vector3 b1 = projectionMatrix.MultiplyPoint( new Vector3( -1f, 1f, 1f ) );
+		Vector3 b2 = projectionMatrix.MultiplyPoint( new Vector3( 1f, 1f, 1f ) );
+		Vector3 b3 = projectionMatrix.MultiplyPoint( new Vector3( 1f, -1f, 1f ) );
+		Gizmos.DrawLine( f0, f1 );
+		Gizmos.DrawLine( f1, f2 );
+		Gizmos.DrawLine( f2, f3 );
+		Gizmos.DrawLine( f3, f0 );
+		Gizmos.DrawLine( b0, b1 );
+		Gizmos.DrawLine( b1, b2 );
+		Gizmos.DrawLine( b2, b3 );
+		Gizmos.DrawLine( b3, b0 );
+		Gizmos.DrawLine( f0, b0 );
+		Gizmos.DrawLine( f1, b1 );
+		Gizmos.DrawLine( f2, b2 );
+		Gizmos.DrawLine( f3, b3 );
+	}
+
+
+	/// <summary>
+	/// Draw a camera frustum.
+	/// </summary>
+	public static void DrawFrustum( Camera camera )
+	{
+		DrawFrustum( camera.transform.worldToLocalMatrix, camera.projectionMatrix );
+	}
+
+
+	/// <summary>
+	/// Draw a 3D wire cross hair.
+	/// </summary>
+	public static void DrawWireCross( Vector3 position, float size )
+    {
+		float extents = size * 0.5f;
+		Gizmos.DrawLine( position + Vector3.left * extents, position + Vector3.right * extents );
+		Gizmos.DrawLine( position + Vector3.down * extents, position + Vector3.up * extents );
+		Gizmos.DrawLine( position + Vector3.back * extents, position + Vector3.forward * extents );
+	}
+
+
+	/// <summary>
+	/// Draw axis lines.
+	/// </summary>
+	public static void DrawWireAxis( Vector3 position, float extents, bool colorize = true )
+	{
+		if( colorize ) Gizmos.color = Color.red;
+		Gizmos.DrawLine( position, position + Vector3.right * extents );
+		if( colorize ) Gizmos.color = Color.green;
+		Gizmos.DrawLine( position, position + Vector3.up * extents );
+		if( colorize ) Gizmos.color = Color.blue;
+		Gizmos.DrawLine( position, position + Vector3.forward * extents );
 	}
 
 
