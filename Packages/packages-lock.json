@@ -37,7 +37,7 @@
       "url": "https://packages.unity.com"
     },
     "dk.cec.gizmores": {
-      "version": "file:C:/Users/ce/Repos/Gizmores_DEV/PackageRepos/dk.cec.gizmores",
+      "version": "file:C:../../PackageRepos/dk.cec.gizmores",
       "depth": 0,
       "source": "local",
       "dependencies": {}
